@@ -1,17 +1,12 @@
 ---
-title: Media support
-type: major
+layout: post
+title:  "Welcome to devlopr !"
+summary: Hello World ! This is a sample post
+author: hees
+date: '2022-10-04 22:03:23 +0530'
+category: jekyll
 ---
 
-ChatApp introduces media support! Send images, videos and documents to your contacts.
+## first content
 
-**Features:**
-
-* Image support
-* Video support
-* Document support
-
-**Fixes:**
-
-* Edge case contact syncing issue
-* All memory leaks obliterated
+### hello 
