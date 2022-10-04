@@ -1,16 +1,12 @@
 ---
-title: General fixes and improvements
-type: minor
+layout: post
+title:  "안녕하세요 !"
+summary: This is a sample post 2 by HG !
+author: SHG
+date: '2022-07-16 09:41:00 +0900'
+category: jekyll
 ---
 
-This release fixes a few minor issues reported by users. We've also made a few quality of life improvements.
+## hi
 
-**Features:**
-
-* Streamlined access to contact details
-* Better sort order for archived messages
-
-**Fixes:**
-
-* Input sometimes getting stuck
-* One more memory leak obliterated
+### hahahah
