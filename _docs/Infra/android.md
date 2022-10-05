@@ -1,7 +1,9 @@
 ---
 title: Android
-category: Devices
-order: 2
+category: Infra
+nav_order: 1
+has_children: true
+permalink: /_docs/Infra
 ---
 
 Use ChatApp on all of your Android devices. Every version is supported.

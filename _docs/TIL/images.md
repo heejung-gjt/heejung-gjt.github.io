@@ -1,6 +1,6 @@
 ---
 title: Images
-category: Media
+category: TIL
 order: 1
 ---
 

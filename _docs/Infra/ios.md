@@ -1,7 +1,9 @@
 ---
 title: iOS
-category: Devices
-order: 1
+category: Infra
+nav_order: 2
+has_children: true
+permalink: /_docs/Infra
 ---
 
 Use ChatApp on most of your Apple devices. Only the latest versions are supported.
