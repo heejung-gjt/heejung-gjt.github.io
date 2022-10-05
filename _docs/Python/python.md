@@ -1,5 +1,5 @@
 ---
-title: List
+title: .
 category: Python
 order: 1
 ---
