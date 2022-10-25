@@ -1,0 +1,128 @@
+---
+layout: post
+title: '개발 환경 구성'
+subtitle: 'know'
+categories: know
+# tags: asynchronous
+comments: false
+order: 2
+---
+
+
+첫 업무를 받았을때 가장 애를 먹었던 부분 중 하나가 개발해야 되는 환경을 세팅하는 거였다. <br>
+ 
+받았던 첫 업무는 기존에 있는 프로젝트가 아닌 새로운 프로젝트를 개발환경 세팅부터 아예 처음해야 하는 상황이였다. 기억에 남는 웃픈 일화 중 하나는 디비 세팅을 하는 과정에서 혼자서 테이블을 일일히 장고 필드로 만들고 데이터베이스에 마이그레이션을 했다. 
+DB를 생성하고 테이블을 마이그레이션 하는 과정에서 이미 사용되고 있는 DB가 있었다는걸 알았다.. (프로젝트에 사용되는 DB가 있는줄 몰랐다..^^) 지금 생각해보면 정말 아무것도 모른 상태에서 시작한거 같다 하하 <br>
+
+개발 환경을 세팅하면서 어려움(?)을 겪었던 부분과 알아두면 좋은 팁(?) 대해 기록을 남겨놓으려 한다. <br><br>
+
+
+##### 개발 환경 구성 
+> Python3.9   
+> Django4.0(django-ninja Web Framework)    
+> Nginx + Gunicorn(WSGI) + Uvicorn(ASGI) + Docker    
+> Postgresql14 (DB, DBeaver GUI)    
+> Git (gitlab이였다가 git으로 변경)
+
+<br>
+
+##### 구성 과정
+
+1. __github clone__     
+    - __ssh VS http__   
+    git에서 프로젝트를 clone할 때 어떤 방식을 선택해야 할까 ?   
+    http로 clone하는 경우 push, pull을 진행할때 매번 사용자의 정보를 입력해야 한다. (그리고 이제 github에서는 pwd로 작업을 진행할 수 없다.) 그래서 ssh키를 등록해서 매번 암호 입력을 할 필요없이 작업을 진행했다. (물론 안전상 ssh를 쓰는 더 많은 이유가 존재한다. 구글링 해보자)
+
+    - __SSH키 생성__   
+       - 보통 ssh키는 홈 디렉토리에 저장된다 ```~/.ssh```   
+       - ```ssh-keygen``` 명령어로 키를 생성한다. 이때 ssh-keygen에는 여러 옵션이 있지만 ssh-keygen만으로도 생성 가능하다    
+       - 저장하려는 위치와 키 이름을 지정할 수 있다   
+       - 해당 key를 사용할때 사용하는 패스워드를 설정할 수 있다(나는 건너뛰었다 ^^)  
+
+       ```shell
+       $ ssh-keygen # ssh 키 생성
+
+       $ ssh-keygen -t rsa # -t: 암호화 옵션, rsa: rsa 암호화 방식으로 생성
+       ```
+
+       🔺 [ssh-keygen에 대한 문서 - wiki](https://zetawiki.com/wiki/%EB%A6%AC%EB%88%85%EC%8A%A4_ssh-keygen)
+
+    - __만들어진 공개키는 GitHub에 등록__   
+    cat 명령어를 통해 공개키의 내용을 깃에 등록한다. 나는 cat명령어로 공개키 내용을 출력한 후 직접 복사했지만 pbcopy, pbpaste라는 기능이 있다. 해당 명령어를 사용해도 좋을듯 싶다 (mac의 경우에는 pbcopy라는 명령어가 존재한다)
+       ```shell
+       $ cat id_rsa.pub
+
+       $ cat id_rsa.pub | pbcopy  # mac 기준
+       ```
+    이렇게 복사한 공개키는 github에 등록되어야 한다. 
+    > Settings -> SSH and GPG keys -> New SSH key 클릭 -> ssh키 등록
+
+       이후 해당 ssh키를 사용하기 위해서 ssh-agent에 키를 등록한다.
+       
+       ```shell
+       $ ssh-add -l  # 실행값에 error 발생하는 경우 아래 명령어로 ssh-agent를 실행한다
+
+       $ $ eval "$(ssh-agent -s)"
+
+       $ ssh-add ~/.ssh/id_rsa(private)  # ssh키 등록
+       ```
+    
+       ssh key등록이 끝나야 ssh clone을 진행할 수 있다.
+
+
+2. __프로젝트 생성__   
+    - __가상환경 구축 & 패키지 설치__
+        - 프로젝트를 생성할 때 가장 먼저 해야 할 건 "가상환경 구축" 이다. 그 다음 필요한 패키지를 설치한다. 장고에 대한 패키지 설치 또한 구글링 해보자
+
+      ```shell
+      $ python3.9 -m venv venv
+      $ source venv/bin/activate
+      
+      (venv) $ pip install django
+      ```
+   
+ 
+        ```shell
+        pip install -r requirements.txt
+        ```
+
+3. __DB 세팅__   
+    - db를 연동해야 하는데 보통 로컬에서 개발할때는 로컬 디비를 연결해서 사용하고 있다. postgresql을 사용하고 있으며 민감한 정보이기 때문에 env를 통해 디비 정보를 가져와 세팅한다.
+
+    ```python
+    # db 정보
+    MAIN_DB_HOST = env("MAIN_DB_HOST")
+    MAIN_DB_PORT = env("MAIN_DB_PORT")
+    MAIN_DB_NAME = env("MAIN_DB_NAME")
+    MAIN_DB_USER = env("MAIN_DB_USER")
+    MAIN_DB_PASSWORD = env("MAIN_DB_PASSWORD")
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": MAIN_DB_NAME,
+            "USER": MAIN_DB_USER,
+            "PASSWORD": MAIN_DB_PASSWORD,
+            "HOST": MAIN_DB_HOST,
+            "PORT": MAIN_DB_PORT,
+        }
+    }
+    ```
+    - 로컬 DB에 데이터를 가져오기 위해서는 백업과 복원을 진행해야 하는데 나는 pgadmin을 통해 로컬 디비에 마이그레이션 했었다    
+    프로젝트 진행 초반에는 RelationShip이 걸려있는 데이터도 잘 가져와졌던거 같은데 현재 데이터가 꽤 쌓인 상태에서 백업/복원 진행을 하니 fk걸려있는 모든 데이터는 복원되지 않았다.. (로컬 디비 데이터 모두 날려버려서 해결방법을 찾아야 한다..)
+    
+    - __DBeaver GUI를 이용한 디비 세팅__   
+        - 초반에는 pgadmin GUI를 사용했는데 렉이 너무 심하게 걸려서 추천받은 DBeaver 툴을 사용하고 있다. 가끔 렉이 걸리기는 하지만 pgadmin보다는 훨씬 낫다..   
+        - 로컬 데이터베이스와 user를 생성해줘야 한다
+        ```shell
+        $ psql -U postgres # postgres 접속
+        ```
+        - db, user 생성
+        ```sql
+        postgres=# CREATE USER test PASSWORD 'test' SUPERUSER;
+        postgres=# ALTER USER tst CREATEDB;
+        postgres=# CREATE DATABASE db_name;
+        ```    
+
+4. __개발/운영 서버에 clone 진행 할 때 팁__
+- 쉘 스크립트를 작성해서 실행하면 repo clone부터 가상환경 설치, 필요한 패키지 설치까지 자동으로 할 수 있다. 쉘 스크립트 작성은 추후에 알아보려고 한다 

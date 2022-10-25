@@ -1,0 +1,12 @@
+---
+layout: post
+title: 'Python clean code 9장을 읽고'
+subtitle: 'clean code를 9장을 읽고'
+categories: python
+tags: clean-code
+comments: false
+img: "/assets/img/cleancode.jpg"
+order: 1
+---
+
+Python clean code를 읽고

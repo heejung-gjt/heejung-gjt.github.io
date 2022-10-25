@@ -1,0 +1,22 @@
+---
+layout: post
+title: '"The Python path in your debug configuration is invalid" 에러 발생'
+subtitle: 'til'
+categories: know
+# tags: asynchronous
+comments: false
+order: 1
+---
+
+장고에서 사용하고 있던 venv(가상환경)을 지우고 다시 설치해야 되는 상황이 있어서 venv를 지우고 다시 설치하니 디버깅이 동작하지 않았다. 아래의 에러 팝업창이 떴는데 찾아보니 보통은 다들 현재 사용하고 있는 python버전을 선택하면 해결되었다고 했다.
+
+> The Python path in your debug configuration is invalid
+
+
+<br>
+
+#### 블로그에 나와 있는 해결 방법
+
+> ctrl + shift + p (윈도우 기준) -> Python: Select Interpreter 선택 ->  원하는 python 버전 선택
+
+하지만 위에처럼 진행해도 똑같았다. 그러다 venv 파일을 열어서 봐보니 python 버전이 3.10대였다. launch.json 파일에 지정되어 있던 파이썬 버전은 3.9대로 버전이 달라서 발생한 이슈였다. launch.json에 지정되어 있던 파이썬 버전을 3.10으로 변경해주니 정상적으로 작동했다.
