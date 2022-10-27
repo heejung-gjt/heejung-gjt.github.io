@@ -1,0 +1,51 @@
+---
+layout: post
+title: 'pg_dump 이용한 마이그레이션'
+subtitle: 'pg_dump를 이용해 데이터 마이그레이션하기'
+categories: db
+tags: pg-dump
+comments: false
+order: 1
+---
+
+로컬 디비 데이터를 모두 날려버려 데브 디비의 데이터를 마이그레이션 해야하는 상황이였다. postgresql을 사용하고 있었는데 크게 두가지 방법을 사용했다.      
+
+- __pgAdmin4를 이용한 backup/restore__   
+- __pg_dump 명령어를 이용한 마이그레이션__
+
+
+프로젝트 초반에 pgAdmin4으로 마이그레이션 한적이 있어 이번에도 가장 먼저 pgAdmin4를 이용해서 데브 디비 데이터 백업을 진행했다.   
+
+이번엔 2가지 문제가 존재했다
+> 1. 백업/복원 시간이 굉장히 오래걸림
+> 2. fk걸려 있는 데이터는 마이그레이션 되지 않음    
+
+
+
+찾아보니 pgAdmin으로 복원할때 fk 관련 데이터가 복원되지 않는 경우가 있는 것 같았다. 복원 후 각각 테이블을 다시 복원 진행해야 한다는 글을 봤다.. 
+
+그래서 pg_dump명령어를 써서 복원을 하기로 했다.   
+
+pg_dump명령어는 생각보다 간단하다.  
+
+- AWS ec2 서버
+- RDS 사용
+
+1. 데브 서버에 접속해서 아래 명령어로 psql 파일을 dump 받으면 된다
+```shell
+pg_dump -h {host 주소}  -d {db_name} -p 5432 -U {username} > {filename}.psql
+```   
+
+
+2. scp를 이용해 원격에 있는 psql 파일을 로컬로 옮긴다
+```shell
+# 로컬 cmd
+S scp -i ~/.ssh/<pem_key> <user>@<ip>:<psql 파일 directory> <저장할 local 디렉토리>
+```
+
+3. 옮겨진 psql 파일로 local db에 마이그레이션 진행
+```shell
+psql -f <psql 파일 directory> -d <db name> -U <user>
+```
+
+pgAdmin4.. 백업 시간 너무 느리다. 거의 30-40분 걸렸는데 pg_dump쓰니까 2-3분 안에 끝난다...

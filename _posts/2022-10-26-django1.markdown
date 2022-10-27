@@ -1,0 +1,11 @@
+---
+layout: post
+title: '장고의 queryset 메소드'
+subtitle: 장고의 queryset 메소드 정리'
+categories: python
+tags: django
+comments: false
+order: 1
+---
+
+.
