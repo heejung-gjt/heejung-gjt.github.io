@@ -1,0 +1,27 @@
+---
+layout: post
+title: 'Postgres의 None은 null'
+subtitle: 'know'
+categories: know
+# tags: asynchronous
+comments: false
+order: 5
+---
+
+파이썬에서는 빈값을 None으로 표현한다. 이때 주의해야 할 점은
+postgres는 빈값을 null로 인식한다.
+
+
+- 장고 ORM은 내부적으로 None을 DB에 update할때 null로 처리해서 넣어주는 듯 하다
+```python
+TblDjangoTable.objects.update(data=None)
+```
+
+- 네이티브 python에서 로우쿼리로 데이터를 넣을때 None으로 업데이트를 하는 경우 에러가 발생한다. null이라는 값을 넣어야 postgres에서
+빈값으로 인식한다. 이때 또 주의할 점은 ```''``` 와 ```null``` 은 다르다는것 !   
+
+```sql
+UPDATE tbl_django_table SET data = None  -- error 발생
+
+UPDATE tbl_django_table SET data = null
+```

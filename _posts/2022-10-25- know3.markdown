@@ -32,3 +32,15 @@ $ find . -name "*.sql"  # 현재 위치에서 .sql이 들어가는 파일 찾음
 
 $ find / -name "*.sql"  # 루트에서 해당 파일 찾음 
 ```
+
+<br>
+
+> __ln__   
+소프트 링크: 바로가기 링크로 보면된다, 원본 파일이 삭제되면 해당 링크는 사용하지 못한다     
+하드링크: 원본 파일을 복사 -> 복사본을 생성, 원본 파일이 삭제되도 복사본을 가지고 있기 때문에 사용할 수 있다
+
+```shell
+$ ln -s ~/Desktop/test.psql test_symlink  # test_symlink -> /home/heejung/Desktop/test.psql
+
+$ ln ~/Desktop/test.psql test_hardlink  # test_hardlink
+```

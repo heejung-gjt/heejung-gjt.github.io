@@ -1,0 +1,27 @@
+---
+layout: post
+title: 'Postgres의 작은따옴표 이슈 '
+subtitle: 'know'
+categories: know
+# tags: asynchronous
+comments: false
+order: 4
+---
+
+postgres 문법은 문자열을 ```""``` 가 아닌 ```''``` 으로 인식한다  
+아래 쿼리를 돌려보면 첫번째 쿼리에서 syntax error가 발생하는걸 볼 수 있다
+```sql
+select 'hee's home'
+```
+
+```text
+# 발생에러
+syntax error at or near "home"
+LINE 1: select 'hee's home'
+```
+
+해결 방법은 문자열 안에 존재하는 ```'``` 를 ```''``` 으로 변경하는 것이다
+```sql
+select 'hee''s home'
+```
+<img src="http://127.0.0.1:4000/assets/img/know/query_res1.png" align="left">

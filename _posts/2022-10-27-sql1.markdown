@@ -2,8 +2,8 @@
 layout: post
 title: 'pg_dump 이용한 마이그레이션'
 subtitle: 'pg_dump를 이용해 데이터 마이그레이션하기'
-categories: db
-tags: pg-dump
+categories: know
+tags: know
 comments: false
 order: 1
 ---
