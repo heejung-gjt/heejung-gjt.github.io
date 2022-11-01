@@ -1,0 +1,40 @@
+---
+layout: post
+title: 'pgcrypto를 이용한 암호화'
+subtitle: 'django에서 pgcrypto를 import해서 디비 데이터 암호화'
+categories: db
+tags: pgcrypto
+comments: false
+order: 1
+---
+
+현재 내가 맡고 있는 프로젝트에서는 django-pgcrypto를 이용해 디비에 저장되는 민감한 데이터를 암호화하고 있다.
+```shell
+pip install django-pgcrypto
+```
+🔺 [Pypi](https://pypi.org/project/django-pgcrypto/)
+
+특정 필드의 값을 암호화하고 싶을땐 아래와 같은 장고 필드를 이용하면 된다
+- pgcrypto.EncryptedTextField()
+- pgcrypto.EncryptedDecimalField()
+- pgcrypto.EncryptedDateField()   
+
+이렇게 데이터를 암호화 시키게 되면 아래와 같이 데이터가 암호화되어 디비에 저장된다
+
+- ex) test0303
+```text
+-----BEGIN PGP MESSAGE----- ZftE/7eXXkWCBbxedCGHfQ===lq5n-----END PGP MESSAGE-----
+```
+
+pgcrypto를 이용하면 장고에서 내부적으로 알아서 암/복호화를 해주는 편리함이 있다.   
+
+하지만 쿼리로 데이터를 보기 위해서는 꽤나 복잡한 명령어를 입력해야 한다
+
+- 데이터 복호화
+```sql
+```
+
+- 데이터 암호화
+```sql
+select encode(encrypt(convert_to('test0303','utf8'),'encrypt_key','aes'),'utf-8');
+```

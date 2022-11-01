@@ -1,0 +1,34 @@
+---
+layout: post
+title: ''
+subtitle: 'know'
+categories: know
+# tags: asynchronous
+comments: false
+order: 3
+---
+
+> __df .__  
+현재 디렉토리의 파일 시스템 사용 가능 공간
+
+![리눅스 용량 이미지](/assets/img/know/know2.png)
+
+<br>
+
+> __df -h__  
+파일 시스템의 사용 가능한 디스크 공간 정보 출력
+-h : 용량 단위 표시 (mb, kb,,)   
+파일 시스템 중에 / 위치에 마운트 되어 있는 파일 시스템에 대부분의 파일과 디렉토리가 위치한다   
+
+![리눅스 용량 이미지](/assets/img/know/know1.png)
+
+<br>
+
+> __find__   
+파일 검색할때 사용
+
+```shell
+$ find . -name "*.sql"  # 현재 위치에서 .sql이 들어가는 파일 찾음
+
+$ find / -name "*.sql"  # 루트에서 해당 파일 찾음 
+```

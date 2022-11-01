@@ -1,0 +1,15 @@
+---
+layout: post
+title: '221028'
+subtitle: '221028'
+categories: til
+# tags: asynchronous
+comments: false
+---
+
+PyPi(Python Package Index)란? 파이썬 관련 패키지들이 모여있는 저장소라고 할 수 있다   
+
+우리가 pip로 다운받는 모든 패키지들이 이곳에 있다.
+pip를 통해서 PyPi에서 있는 패키지를 가져와 설치한다고 생각하면 된다.
+
+즉 우리가 pip로 설치해 쓰고 있는 패키지는 다른 개발자 누군가가 만든 모듈들이다.  
