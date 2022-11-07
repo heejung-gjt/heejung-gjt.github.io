@@ -24,4 +24,4 @@ LINE 1: select 'hee's home'
 ```sql
 select 'hee''s home'
 ```
-<img src="http://127.0.0.1:4000/assets/img/know/query_res1.png" align="left">
+<img src="https://heejung-gjt.github.io/assets/img/know/query_res1.png" align="left">

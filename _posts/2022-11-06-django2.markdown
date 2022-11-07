@@ -51,7 +51,7 @@ except Exception as e:
 
 ```
 로그를 남기는 경우 아래와 같은 이미지처럼 날짜와 작업에 대한 msg, 작업에 대한 data를 볼 수 있다. 오류 발생시에 디버깅하기 훨씬 편하다.
-<img src="http://127.0.0.1:4000/assets/img/python/log.png" align="left">
+<img src="https://heejung-gjt.github.io/assets/img/python/log.png" align="left">
      
 
 <br>
