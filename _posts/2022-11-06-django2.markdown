@@ -1,0 +1,213 @@
+---
+layout: post
+title: '예외처리(Error Handling) - 작성중'
+subtitle: '장고 에러 핸들링 처리하는 방법'
+categories: python
+tags: django
+comments: false
+order: 2
+---
+
+API를 구현할 때 고려해야 할 것 중 하나는 "에러핸들링 처리를 어떻게 할 것인가"이다  
+
+기본적으로 예외처리는 try ~ except 절을 사용한다.
+```python
+try:
+    pass
+
+except Exception as e:
+    pass
+```
+이때 except절은 보통 세분화해서 남긴다
+```python
+try:
+    pass
+
+except ExTable.DoesNotExist:
+    pass
+
+except Exception as e:
+    pass
+```
+예외처리를 하는 이유는 서비스의 예외적인 에러를 원하는 방식으로 핸들링 하기 위해서다.   
+API를 작업하면서 예상 할 수 있는 에러가 있고 예상하지 못하는 에러가 있을 수 밖에 없다.   
+
+아무리 완벽하게 짰다고 한들 에러는 발생할 수 있다. 그렇기 때문에 해당 버그를 좀 더 빠르고 정확하게 찾기 위해서 except절에 에러 로그를 달아준다  
+내 프로젝트에는 이미 만들어진 로그 모듈을 import받아 사용하고 있다.
+```python
+import common.logger import set_logger
+
+
+_logger = set_logger("traceback")
+
+try:
+    _logger.info("Success. (data: request_data)")
+
+except ExTable.DoesNotExist:
+    _logger.error("Failed. (data: request_data)")
+
+except Exception as e:
+    _logger.error("Failed. (data: request_data)")
+
+```
+로그를 남기는 경우 아래와 같은 이미지처럼 날짜와 작업에 대한 msg, 작업에 대한 data를 볼 수 있다. 오류 발생시에 디버깅하기 훨씬 편하다.
+<img src="http://127.0.0.1:4000/assets/img/python/log.png" align="left">
+     
+
+<br>
+<br>
+
+바쁜 작업이 어느정도 마무리 되었으니 내가 맡은 프로젝트의 에러 핸들링 부분을 커스텀하려고 한다.  
+
+현재 내가 구현한 에러 핸들링 방식은 에러와 같다
+
+```python
+
+# config/api.py
+
+def api_exc_handler(request, exc):
+    return exc.to_json_res()
+
+
+def exc_handler(request, exc):
+    _logger = set_logger("traceback")
+    _logger.error(f"{traceback.format_exc()}")
+    return JsonResponse({"error": traceback.format_exc()}, status=500)
+
+
+api.add_exception_handler(Exception, exc_handler)
+api.add_exception_handler(ApiAdminError, api_exc_handler)
+```
+
+```python
+
+# admin/api.py
+
+class ApiAdminError(Exception):
+    ALREADY_EXIST_ID = ("입력한 아이디가 이미 존재합니다.", "000302", 400)
+    DUPLICATE_PHONE_NUMBER = ("이미 핸드폰 번호가 존재합니다.", "000303", 400)
+    NO_INPUT_VALUE = ("모든 값을 입력해주세요.", "000001", 400)
+
+    def __init__(self, error_obj: tuple) -> None:
+        self.data = error_obj
+
+    def to_json_res(self) -> dict:
+        return JsonResponse(
+            {"ret_code": self.data[1], "error": self.data[0]},
+            status=self.data[2],
+        )
+
+
+@router.post(  # 계정 추가
+    "/account",
+    tags=[""],
+    summary="",
+    description=desc_create_account,
+    auth=AuthBearer("True"),
+    response=AccountOutput,
+)
+def create_partner_account(request, data: AccountInfo):
+    def _validate_user_input() -> tuple:
+        if (
+            (not data.id)
+            or (not data.pwd)
+            or (not data.name)
+            or (not data.account_holder)
+        ):
+            _logger.error(
+                f"failed create partner account"
+                f" {ApiAdminError.NO_INPUT_VALUE[0]}"
+            )
+            raise ApiAdminError(ApiAdminError.NO_INPUT_VALUE)
+
+        if TblPartnerMaster.objects.filter(
+            site_id=data.id, status="Normal"
+        ).exists():
+            _logger.error(
+                f"failed create partner account"
+                f" {ApiAdminError.ALREADY_EXIST_ID[0]} (site_id: {data.id})"
+            )
+            raise ApiAdminError(ApiAdminError.ALREADY_EXIST_ID)
+
+        phone_number = None
+        if data.phone_number:
+            _logger.error(
+                f"{ApiAdminError.DUPLICATE_PHONE_NUMBER[0]} "
+                f"phone_number: {phone_number}, "
+                f"account_holder: {data.account_holder}"
+            )
+```
+에러 발생시 어떤식으로 핸들링 처리되고 있는지만 보자
+
+- API Error발생시 각 view마다 Exception을 상속받은 error class를 구현
+    - 불필요한 코드 낭비
+- 발생한 Error값들이 각 view마다 작성되어 있음
+    - Error값들을 한번에 파악하기 힘듦
+- Api Error / Traceback Error 발생시 모두 로그를 직접 아래에 달아줌
+    - 로그 포맷이 일정하지 않은 단점이 있음
+
+<br>
+
+내가 처리하고 싶은 방식은            
+- error code를 하나의 파일로 모아 관리하고 싶음         
+- 크게 ApiError(예상한 에러) 와 Traceback Error(예상치 못한 에러)로 나눠서 통일화된 로그값과 반환값으로 내려주고 싶음      
+- 정해진 응답 양식대로 값을 반환하기 위해 200, 400, 500에 대한 반환값 구별 필요 
+- 성공/실패에 대한 로그에 요청값이 반환 될 수 있게 처리   
+
+----
+
+<br>
+
+> 사용 프레임워크        
+- Django4.0 ([django-ninja](https://django-ninja.rest-framework.com/guides/response/))      
+
+
+- 200, 400, 500에 대한 공통 반환값 작성     
+    - common/Schema라는 곳에 공통 스키마를 먼저 작성했다    
+    - 200의 경우 반환되는 값이 다 다르기 때문에 공통 스키마를 상속받아 해당 반환되는 값에 맞춰 스키마를 작성해줬다    
+
+    ```python
+    #common/schema.py
+    
+    class CommonSuccessOutPut(Schema):
+        status: str
+        data: dict
+
+    class CommonFailedOutPut(Schema):
+        status: str
+        code: str
+        message: str
+
+    ```   
+
+    ```python
+    # 해당view.py/schema.py
+    
+    from schema import CommonSuccessOutPut
+
+
+    class ReadAdminInfoOutput(CommonSuccessOutPut):   # 반환값에 맞게 커스텀
+        data = {
+            "key1": "value1",
+            "key2": [{"key2_2": "value2_1"}]
+        }
+    ```
+<br>
+
+- common/error.py에 Error 코드값들을 Enum 타입으로 관리하도록 수정했다    
+
+```python
+from enum import Enum
+
+
+class ErrorCode:
+    class Common(Enum):
+        UNKNOWN_ERROR = ("000099", "분류되지 않는 에러 발생입니다", "따로 핸들링 되지 못한 에러일때")
+```
+
+<br>
+
+- common/error.py에 Exception을 상속받은 ApiError 클래스를 구현했다   
+    - 예상했던 에러들은 ApiError를 타게 된다.   
+    - 포맷된 로그 값을 리턴한다. (to_log_value)   
+    - 클라이언트에 반환할 포맷된 값을 리턴한다. (to_json_res)
