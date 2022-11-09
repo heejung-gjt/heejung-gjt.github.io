@@ -1,6 +1,6 @@
 ---
 layout: post
-title: '예외처리(Error Handling) - 작성중'
+title: '예외처리(Error Handling)'
 subtitle: '장고 에러 핸들링 처리하는 방법'
 categories: python
 tags: django
@@ -163,7 +163,7 @@ def create_partner_account(request, data: AccountInfo):
 
 
 - 200, 400, 500에 대한 공통 반환값 작성     
-    - common/Schema라는 곳에 공통 스키마를 먼저 작성했다    
+    - common/schema라는 곳에 공통 스키마를 먼저 작성했다    
     - 200의 경우 반환되는 값이 다 다르기 때문에 공통 스키마를 상속받아 해당 반환되는 값에 맞춰 스키마를 작성해줬다    
 
     ```python
@@ -209,5 +209,109 @@ class ErrorCode:
 
 - common/error.py에 Exception을 상속받은 ApiError 클래스를 구현했다   
     - 예상했던 에러들은 ApiError를 타게 된다.   
-    - 포맷된 로그 값을 리턴한다. (to_log_value)   
-    - 클라이언트에 반환할 포맷된 값을 리턴한다. (to_json_res)
+    - 포맷된 로그 값을 리턴한다. (get_log_str)   
+    - 클라이언트에 반환할 포맷된 값을 리턴한다. (get_json_res)
+
+    ```python
+    # common/error.py
+
+    class ApiError(Exception):
+        def __init__(
+            self,
+            error_obj: Optional[Enum] = None,
+            req_data: Optional[dict] = None,
+            code: Optional[int] = None,
+            message: Optional[str] = None,
+        ):
+            if error_obj:
+                error_obj = error_obj.value
+                self.code = error_obj[0]
+                self.message = error_obj[1]
+            else:
+                self.code = code
+                self.message = message
+
+            self.req_data = str(req_data)
+
+        def get_log_str(self):
+            return f"ApiError - code: {self.code}, request_data: {self.req_data}, message: {self.message}"
+
+        def get_json_res(self):
+            server_error_code_list = [
+                ErrorCode.Common.UNKNOWN_ERROR.value[0]
+            ]
+
+            if self.code in server_error_code_list:
+                return err_json_res("Failed", str(self.code), self.message, 500)
+            else:
+                return err_json_res("Failed", str(self.code), self.message, 400)
+
+    ```
+
+    <br>
+
+    성공시 반환하는 공통 포맷과 에러값을 반환하는 포맷을 만들었다
+    ```python
+    # func.py
+    
+    def err_json_res(
+        status: str,
+        code: str,
+        message: str,
+        stat: int
+    ) -> Dict:
+        data = {"status": status, "code": code, "message": message}
+
+        return JsonResponse(
+            data,
+            json_dumps_params={"ensure_ascii": False},  # 유니코드로 표현
+            status=stat
+        )
+
+
+    def success_json_res(
+        status: str,
+        stat: int,
+        result: Optional[dict] = {},
+    ) -> Dict:
+        data = {"status": status, "data": result}
+
+        return JsonResponse(
+            data,
+            json_dumps_params={"ensure_ascii": False},
+            status=stat
+    )
+
+    ```
+
+    <br>
+
+    API단에서 에러 발생시 아래의 함수를 탈 수 있게 처리했다
+    ```python
+    # config/api.py
+
+    def api_handler(request: object, error: ApiError) -> dict:
+        _logger = set_logger("traceback")
+        _logger.error(f"{error.get_log_str()}\n{traceback.format_exc()}")
+        return exc.to_json_res()
+    
+    api.add_exception_handler(ApiError, api_handler)
+    ```
+
+    <br>
+
+    에러 발생시 아래와 같이 ApiError로 raise 처리한다
+    ```python
+    try:
+        cursor = connection.cursor()
+        cursor.execute(raw_query)
+        query_result = cursor.fetchall()
+
+    except Exception as e:
+        raise ApiError(ErrorCode.Common.FAILED_READ)
+    ```
+
+    변경 후 로그를 공통 포맷으로 유지할 수 있었고 매번 API에 로그를 일일히 달아줬는데 이런 중복을 없앨 수 있었다. 현재는 /var/log/traceback이라는 곳에 로그를 남기고 있는데 한가지 고려를 해봐야 할 점은 바로 "각 app마다 로그 파일을 생성하는 것이다"   
+
+    기존 핸들링 방식은 각 app마다 전역으로 로그 파일 네임을 정해 해당 파일에 로그를 남기는 방식이었다. 하지만 변경된 방식에서는 "api_handler" 함수에서 하나의 로그 파일에 남기고 있다. 이 부분은 정답이 없기 때문에 내가 편한 방식대로 변경하면 될 듯 싶다
+
