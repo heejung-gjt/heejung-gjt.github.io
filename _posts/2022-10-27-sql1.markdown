@@ -39,7 +39,7 @@ pg_dump -h {host 주소}  -d {db_name} -p 5432 -U {username} > {filename}.psql
 
 2. scp를 이용해 원격에 있는 psql 파일을 로컬로 옮긴다
 ```shell
-# 로컬 cmd
+# 로컬 terminal
 S scp -i ~/.ssh/<pem_key> <user>@<ip>:<psql 파일 directory> <저장할 local 디렉토리>
 ```
 

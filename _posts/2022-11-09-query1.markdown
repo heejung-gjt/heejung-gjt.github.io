@@ -1,0 +1,60 @@
+---
+layout: post
+title: 'slow query 최적화 - 1 (작성중)'
+subtitle: '슬로우 쿼리 위험성있는 쿼리문 최적화'
+categories: db
+tags: query
+comments: false
+order: 2
+---
+
+아래 쿼리는 어드민쪽에서 슬로우쿼리를 일으키는 주범이였다. 해당 어드민 페이지를 조회할때 실제로 10초 이상이 걸려서 골치를 꽤 썩인 쿼리다
+```sql
+select
+	tsprl.idx,
+	tsm.gender as "gender",
+	tsm.age_group as "agegroup",
+	coalesce(tspooi.remains, 0) as "overseas_remains",
+	tspooi.status as "overseas_status",
+	(tsm.rate * tsprl.order_count) as "order_amount",
+	(tsprl.order_count - tsprl.remains) as "ing_count",
+	'API 주문' as "title"
+from tbl_sidejob_partner_request_log tsprl 
+left outer join tbl_sidejob_master tsm on tsm.service = tsprl.service
+left outer join tbl_sidejob_drip_feed_master tsdfm on tsdfm.master_sidejob_idx = tsprl.idx 
+left outer join tbl_partner_master tpm on tpm.idx = tsprl.partner_idx 
+left outer join tbl_sidejob_partner_overseas_order_info tspooi on tspooi.order_idx = tsprl.idx
+where 
+	tsprl.order_date >= '2021-12-01T00:00:00'
+	and tsprl.order_date < '2022-11-04T00:00:00'
+	and tsdfm.idx is null
+order by tsprl.idx desc
+```
+
+```sql
+select
+	tsprl.idx,
+	tsm.gender as "gender",
+	tsm.age_group as "agegroup",
+	coalesce(tspooi.remains, 0) as "overseas_remains",
+	tspooi.status as "overseas_status",
+	(tsm.rate * tsprl.order_count) as "order_amount",
+	(tsprl.order_count - tsprl.remains) as "ing_count",
+	'API 주문' as "title"
+from tbl_sidejob_partner_request_log tsprl 
+inner join (
+	select *
+	from tbl_sidejob_partner_request_log tsprl2 
+	order by tsprl2.idx desc
+	limit 1000
+) tsprl2 on tsprl2.idx = tsprl.idx
+left outer join tbl_sidejob_master tsm on tsm.service = tsprl.service
+left outer join tbl_sidejob_drip_feed_master tsdfm on tsdfm.master_sidejob_idx = tsprl.idx 
+left outer join tbl_partner_master tpm on tpm.idx = tsprl.partner_idx 
+left outer join tbl_sidejob_partner_overseas_order_info tspooi on tspooi.order_idx = tsprl.idx
+where 
+	tsprl.order_date >= '2021-12-01T00:00:00'
+	and tsprl.order_date < '2022-11-04T00:00:00'
+	and tsdfm.idx is null
+order by tsprl.idx desc
+```
