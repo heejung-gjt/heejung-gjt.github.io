@@ -1,0 +1,40 @@
+---
+layout: post
+title: 'fastapi 구동 방식'
+subtitle: '221230'
+categories: python
+tags: fastapi
+comments: false
+---
+
+<img width="1600" height="300" alt="fastapi" src="https://user-images.githubusercontent.com/64240637/210371049-2123c4e4-8a24-491a-b99b-168ead219368.png">
+
+[이미지 참고 blog](https://breezymind.com/start-asgi-framework/)
+
+
+<br>
+
+#### Web Server   
+  - 웹 서버는 정적 파일에 대한 응답을 한다. (ex - 이미지, html, css)
+
+<br>
+
+#### WSGI   
+  - python 애플리케이션이 웹 서버와 통신하기 위한 인터페이스이다
+  - 웹 서버 요청을 해석 -> 파이썬 애플리케이션(스크립트)으로 전달 (nginx로 들어오는 http request를 파이썬이 이해할 수 있도록 번역)
+
+  - WSGI는 멀티 프로세스를 만들 수 있기 때문에 request 요청이 많아도 효율적인 처리가 가능하다. (운영 환경에서 Gunicorn을 사용하는 이유)
+
+  - 여러 Uvicorn 워커 프로세스를 관리하는 용도로 사용된다.
+
+<br>
+
+#### ASGI    
+  - 비동기 인터페이스를 통해 구현된 웹 서버   
+  - 단일 프로세스로 비동기 처리가 가능하다. 하지만 단일 프로세스이기 때문에 요청량이 많은 곳에서는 동작에 한계가 있다.
+
+  - 개발 환경에서 fastAPI를 구동할때는 Uvicorn을 사용한다.하지만 Uvicorn은 마찬가지로 단일 프로세스로 동작하기 때문에 운영 환경에서는 동작에 한계가 있다. 운영에서 서버를 구동하기 위해서는 다중 프로세스를 사용할 수 있는 WSGI 서버인 Gunicorn을 이용한다.
+
+<br>
+
+__Gunicorn을 사용하여 Uvicorn을 관리하고 이를 통해 여러 프로세스를 동작 시킬 수 있다__

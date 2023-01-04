@@ -1,7 +1,7 @@
 ---
 layout: tag-blog
-title: asynchronous
-slug: asynchronous
+title: fastapi
+slug: fastapi
 category: python
 menu: false
 order: 4

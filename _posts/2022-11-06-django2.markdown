@@ -1,6 +1,6 @@
 ---
 layout: post
-title: '예외처리(Error Handling)'
+title: '예외처리(Error Handling)하는 방법'
 subtitle: '장고 에러 핸들링 처리하는 방법'
 categories: python
 tags: django
@@ -139,18 +139,18 @@ def create_partner_account(request, data: AccountInfo):
 ```
 에러 발생시 어떤식으로 핸들링 처리되고 있는지만 보자
 
-- API Error발생시 각 view마다 Exception을 상속받은 error class를 구현
+- API error발생시 각 view마다 Exception을 상속받은 error class를 구현
     - 불필요한 코드 낭비
-- 발생한 Error값들이 각 view마다 작성되어 있음
-    - Error값들을 한번에 파악하기 힘듦
-- Api Error / Traceback Error 발생시 모두 로그를 직접 아래에 달아줌
+- 발생한 error값들이 각 view마다 작성되어 있음
+    - error값들을 한번에 파악하기 힘듦
+- Api error / Traceback error 발생시 모두 로그를 직접 아래에 달아줌
     - 로그 포맷이 일정하지 않은 단점이 있음
 
 <br>
 
 내가 처리하고 싶은 방식은            
 - error code를 하나의 파일로 모아 관리하고 싶음         
-- 크게 ApiError(예상한 에러) 와 Traceback Error(예상치 못한 에러)로 나눠서 통일화된 로그값과 반환값으로 내려주고 싶음      
+- 크게 ApiError(예상한 에러) 와 Traceback error(예상치 못한 에러)로 나눠서 통일화된 로그값과 반환값으로 내려주고 싶음      
 - 정해진 응답 양식대로 값을 반환하기 위해 200, 400, 500에 대한 반환값 구별 필요 
 - 성공/실패에 대한 로그에 요청값이 반환 될 수 있게 처리   
 

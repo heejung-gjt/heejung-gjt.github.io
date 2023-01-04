@@ -2,8 +2,8 @@
 layout: post
 title: '자주 사용하는 DB 문법'
 subtitle: '자주 사용하는 DB 문법 정리'
-categories: know
-tags: know
+categories: db
+tags: query
 comments: false
 order: 1
 ---
