@@ -3,7 +3,7 @@ layout: post
 title: 'fastapi 구동 방식'
 subtitle: '221230'
 categories: python
-tags: fastapi
+tags: know
 comments: false
 ---
 
