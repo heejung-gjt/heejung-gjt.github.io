@@ -44,3 +44,22 @@ $ ln -s ~/Desktop/test.psql test_symlink  # test_symlink -> /home/heejung/Deskto
 
 $ ln ~/Desktop/test.psql test_hardlink  # test_hardlink
 ```
+
+<br>
+
+> __netstat__   
+네트워크 연결 정보 알아보는 명령어   
+
+```$ netstat -a```    
+<img width="588" alt="스크린샷 2023-03-21 오후 11 58 12" src="https://user-images.githubusercontent.com/64240637/226647010-8acc98ed-127e-43e7-b54b-0c12ec4f03d3.png">
+
+
+```$ netsat -nlpt ```    
+TCP listening 상태의 포트와 프로그램을 보여준다
+<img width="728" alt="스크린샷 2023-03-21 오후 11 59 02" src="https://user-images.githubusercontent.com/64240637/226647239-81bf4c08-2938-4e83-8c05-997a9ab19565.png">   
+
+```$ netstat -an | grep {port num} ```   
+특정 포트가 사용 중에 있는지 확인    
+gunicorn 서버(8000)나 nginx(80)서버가 열려 있는지 확인할 때 쓰이곤 한다
+
+<img width="690" alt="스크린샷 2023-03-22 오전 12 02 09" src="https://user-images.githubusercontent.com/64240637/226648099-b07d881c-1fae-480c-b66a-56502e58e76e.png">

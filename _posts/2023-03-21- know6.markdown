@@ -1,0 +1,18 @@
+---
+layout: post
+title: '127.0.0.1 vs 0.0.0.0'
+subtitle: 'know'
+categories: know
+# tags: asynchronous
+comments: false
+order: 4
+---
+
+
+### 127.0.0.1
+
+특정 대역에 속하는 IP 주소 중 하나로 localhost라고 불리기도 한다. 127.0.0.0/8 IP 주소 대역은(127.(0 ~ 255).(0 ~ 255).(0 ~ 255)) 호스트 외부 네트워크로부터 패킷을 받을 수 없다
+
+
+### 0.0.0.0
+0.0.0.0은 Wi-Fi, Bluetooth, Ethernet 등 호스트의 모든 네트워크 인터페이스 주소를 포함한다.이 주소는 localhost와는 달리 외부 네트워크로부터 패킷을 받을 수 있다
