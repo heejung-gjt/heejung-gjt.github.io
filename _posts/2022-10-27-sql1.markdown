@@ -49,3 +49,28 @@ psql -f <psql 파일 directory> -d <db name> -U <user>
 ```
 
 pgAdmin4.. 백업 시간 너무 느리다. 거의 30-40분 걸렸는데 pg_dump쓰니까 2-3분 안에 끝난다...
+
+<br>
+
+---
+### RDS 디비 -> RDS로 마이그레이션하기
+
+1. 마이그레이션 할 디비가 있는 ec2서버에 접속
+```shell
+pg_dump -h {host 주소}  -d {db_name} -p 5432 -U {username} > {filename}.psql
+```
+
+2. psql 파일 로컬로 옮긴다
+```shell
+$ scp -i ~/.ssh/<pem_key> <user>@<ip>:<psql 파일 directory> <저장할 local 디렉토리>
+```
+
+3. 마이그레이션을 진행할 디비가 있는 ec2서버에 접속 후 psql로 postgres 서버 접속
+```shell
+$ ./psql <데이터베이스이름> -U <유저이름> -h <호스트이름>
+```
+
+4. 생성해둔 백업파일을 복원 (psql상 안에서 진행하기)
+```shell
+\i /Users/dylee/Desktop/db_backup.sql
+```
