@@ -1,0 +1,86 @@
+---
+layout: post
+title: '230412'
+subtitle: '230412'
+categories: til
+# tags: asynchronous
+comments: false
+---
+
+### 1. 디버깅의 중요성
+개발 후 테스트를 진행할 때 디버그 파일 설정해서 디버깅으로 테스트를 진행하자. 시간을 단축시킬 수 있다.
+디버깅을 잘 몰랐을땐 print를 찍어 버그를 찾고 고쳤는데 이 방식은 리소스가 많이 들어가는 방식이다.   
+
+vscode ide로 디버깅 환경을 세팅 할 수 있다
+
+<img width="290" alt="스크린샷 2023-04-12 오후 10 52 26" src="https://user-images.githubusercontent.com/64240637/231479211-3e00a56d-3112-41d6-a5f9-0e08be7d3de5.png" style="margin-left: 0">
+
+launch.json file을 만들어주자 (디버깅 모드로 서버를 실행하기 위함이다)
+이후 검색창이 뜨는데 fastapi를 입력하고 app이 있는 경로를 써주면 된다 app은 fastapi의 실행파일이라고 생각하면 된다   
+~~~python
+# 이 app을 실행시키는거라고 보면된다
+app = FastAPI(
+    title="fastapi site",
+    version="1.0.0",
+    description=DOCS,
+)
+~~~
+
+<br>
+
+그럼 아래와 같은 launch.json file이 만들어진다
+~~~python
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: FastAPI",
+            "type": "python",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "main:app"  # app이 있는 경로
+            ],
+            "jinja": true,
+            "justMyCode": true
+        }
+    ]
+}
+~~~
+
+이후 디버깅 모드로 실행시키면 끝   
+
+- 디버깅 하는 리소스 절약
+- 빠르게 버그를 잡을 수 있음
+- 상황에 맞게 값을 바꿔서 진행 가능
+
+<br>
+
+---
+
+### 2. 로직 테스트를 진행할때는 클라이언트 화면을 띄어놓고 테스트를 진행하자
+이미 클라이언트 소스가 있는 경우엔 로컬로 띄어놓고 사용자가 사용하는 것과 같이 테스트를 진행하자.
+스웨거나 포스트맨과 같은 경우에는 주로 개발자용이기 때문에 실사용자가 사용하는 화면단에서 테스트 하는것이 오류를 잡는데 더 좋다  
+
+<br>
+
+---
+
+### 3. 맥 단축키 활용
+맥북의 단축키를 최대한 활용하는 것만으로도 개발 생산성을 높일 수 있다  
+창 분할, 프로그램 이동, 새창 켜기 등 기본적인 단축키는 공부하고 외워두자   
+
+<br>
+
+---
+
+### 4. 자바스크립트 enable 처리
+가끔 복사가 안되는 블로그가 있다. 이럴경우엔 개발자 도구에서 잠시 자바스크립트 기능을 꺼서 처리할 수 있다
+- F12 -> command + shift + p -> >enable JavaScript 클릭   
+
+<br>
+
+---
+
+### 5. github copilot, GPTChat의 활용
+요즘 굉장히 핫한 AI를 활용하는 방법도 공부하자.. (gpt.. 진짜 무섭다..)
