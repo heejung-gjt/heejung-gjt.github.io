@@ -3,7 +3,6 @@ layout: post
 title: 'ec2서버 구성'
 subtitle: '230321'
 categories: infra
-tags: know
 comments: false
 ---
 

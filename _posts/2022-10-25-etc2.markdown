@@ -1,8 +1,8 @@
 ---
 layout: post
 title: '개발 환경 구성'
-subtitle: 'know'
-categories: know
+subtitle: 'etc'
+categories: etc
 # tags: asynchronous
 comments: false
 order: 2

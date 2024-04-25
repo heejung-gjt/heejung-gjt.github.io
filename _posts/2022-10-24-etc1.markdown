@@ -1,8 +1,8 @@
 ---
 layout: post
 title: '"The Python path in your debug configuration is invalid" 에러 발생'
-subtitle: 'til'
-categories: know
+subtitle: 'etc'
+categories: etc
 # tags: asynchronous
 comments: false
 order: 1

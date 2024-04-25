@@ -1,7 +1,7 @@
 ---
 layout: list
-title: Know
-slug: know
+title: Etc
+slug: etc
 menu: true
 submenu: false
 order: 2

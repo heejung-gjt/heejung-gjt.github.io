@@ -1,8 +1,8 @@
 ---
 layout: post
 title: 'Postgres의 작은따옴표 이슈 '
-subtitle: 'know'
-categories: know
+subtitle: 'db'
+categories: db
 # tags: asynchronous
 comments: false
 order: 4

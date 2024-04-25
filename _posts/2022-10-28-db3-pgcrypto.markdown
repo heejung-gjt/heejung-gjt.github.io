@@ -3,7 +3,6 @@ layout: post
 title: 'pgcrypto를 이용한 암호화'
 subtitle: 'django에서 pgcrypto를 import해서 디비 데이터 암호화'
 categories: db
-tags: pgcrypto
 comments: false
 order: 1
 ---

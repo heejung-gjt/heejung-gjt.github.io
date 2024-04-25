@@ -1,8 +1,8 @@
 ---
 layout: post
 title: '127.0.0.1 vs 0.0.0.0'
-subtitle: 'know'
-categories: know
+subtitle: 'etc'
+categories: etc
 # tags: asynchronous
 comments: false
 order: 4

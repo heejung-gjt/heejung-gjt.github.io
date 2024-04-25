@@ -3,7 +3,6 @@ layout: post
 title: 'nginx란 (작성중)'
 subtitle: 'gunicorn과 nginx에 대한 설명'
 categories: infra
-tags: nginx
 comments: false
 comments: false
 ---
