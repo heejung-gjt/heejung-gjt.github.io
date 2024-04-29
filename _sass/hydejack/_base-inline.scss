@@ -129,6 +129,7 @@ h1, h2, h3, h4, h5, h6 {
   animation-duration: 500ms;
   animation-name: fade-in;
   animation-fill-mode: forwards;
+  height:100px;
 }
 
 @keyframes fade-in {

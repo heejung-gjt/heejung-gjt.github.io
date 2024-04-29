@@ -1,7 +1,7 @@
 ---
 layout: tag-blog
-title: 코테
-slug: 코테
+title: Algorithms
+slug: Algorithms
 category: python
 menu: false
 order: 1
