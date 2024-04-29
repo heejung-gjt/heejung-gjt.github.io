@@ -2,10 +2,9 @@
 layout: post
 title: '사설 IP와 공인 IP'
 subtitle: '221230'
-categories: network
-comments: false
+categories: CS
+tags: Network
 ---
-
 
 - 공인 IP   
 말 그대로 공용 IP이다. IP 주소를 할당해주는 공인기관에서 할당해준 IP로 인터넷 상에서 사용할 수 있다.   
