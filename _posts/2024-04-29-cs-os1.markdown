@@ -1,0 +1,42 @@
+---
+layout: post
+title: '운영체제의 구조'
+subtitle: '운영체제에 대한 설명'
+categories: CS
+tags: OS
+---
+> 공부한 내용을 복기하기 위해 짧게 정리해둔 요약본입니다 :)   
+
+<br><br>
+
+### 운영 체제란
+os는 사용자가 컴퓨터를 사용하기 위해 필요한 소프트웨어로, 컴퓨터의 자원을 효율적으로 관리, 사용자에게 편리성/효율성 제공 할 수 있도록 환경을 제공하는 여러 프로그램의 모임이다
+
+- 정리하자면 운영체제는 컴퓨터의 성능을 높이고, 사용자에게 편의성을 제공하기 위해 컴퓨터 하드웨어를 관리하는 프로그램
+
+<br><br>
+
+### 운영 체제의 역할
+- cpu스케줄링과 프로세스 관리
+- 메모리 관리
+- 디스크 파일 관리 
+- I/O 디바이스 관리
+<br><br>
+
+### 운영 체제의 구조    
+
+- users: 유저 프로그램
+- Application & Shell: 인터페이스 (GUI, CLI)
+- System Call: 시스템 콜
+- Kernel: 커널
+- Hardware(Cpu, Memory, Storage, Network): 필요한 자원
+
+<p><img width="441" alt="스크린샷 2024-04-29 오후 6 18 00" src="https://github.com/heejung-gjt/heejung-gjt.github.io/assets/64240637/82167a8f-33e9-4d7b-8635-315d0cf6965a"></p>
+
+<br>
+
+- 시스템 콜    
+시스템 콜이란 os가 커널에 접근하기 위한 인터페이스이며 유저 프로그램이 운영체제의 서비스를 받기 위해 커널 함수를 호출할때 사용한다
+- 메모리에서 실행중인 프로세스에서 os에 어떠한 요청을 할 때 시스템 콜이라는 인터페이스와 커널을 거쳐 필요한 자원 요청을 전달한다
+<img width="450" height="300" alt="스크린샷 2024-04-29 오후 6 17 38" src="https://github.com/heejung-gjt/heejung-gjt.github.io/assets/64240637/429cea94-063b-4c6a-a905-e19b726dc2b4">
+
