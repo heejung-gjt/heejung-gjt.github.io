@@ -118,6 +118,10 @@ order: 1
 <br>
 
 ### 양방향 연결리스트 구현 (작성중..)
+아래 이미지처럼 더미 head, tail 데이터가 있는 구조로 구현됨    
+<img width="920" alt="스크린샷 2024-05-05 오후 7 50 50" src="https://github.com/heejung-gjt/heejung-gjt.github.io/assets/64240637/28033d15-3286-41be-af11-c8641121ebbd">    
+
+
 ```python
 class Node:
 
@@ -140,7 +144,13 @@ class DoublyLinkedList:
 
 
     def reverse(self):
-        pass
+        cnt = 0
+        res = []
+        curr = self.tail
+        while curr.prev.prev:
+            curr = curr.prev
+            res.append(curr.data)
+        return res
 
 
     def getAt(self, pos):
@@ -150,7 +160,7 @@ class DoublyLinkedList:
         if pos > self.nodeCount // 2:
             i = 0
             curr = self.tail
-            while i < self.nodeCount - pos + 1:
+            while i < self.nodeCount - pos + 1:  # TODO. 왜 범위가 이와 같은지 정확한 이유 이해하기
                 curr = curr.prev
                 i += 1
         else:
@@ -172,13 +182,55 @@ class DoublyLinkedList:
         self.nodeCount += 1
         return True
 
+    def insertBefore(self, next, newNode):
+        prev = next.prev
+        newNode.prev = prev
+        prev.next = newNode
+        next.prev = newNode
+        newNode.next = next
+        self.nodeCount += 1
+        return True
 
     def insertAt(self, pos, newNode):
-        if pos < 1 or pos > self.nodeCount + 1:
+        if pos < 1 or pos > self.nodeCount + 1:  # TODO. 왜 범위가 이와 같은지 정확한 이유 이해하기
             return False
 
         prev = self.getAt(pos - 1)
         return self.insertAfter(prev, newNode)
+
+    def popAfter(self, prev):
+        curr = prev.next
+        next_node = curr.next
+        next_node.prev = prev
+        prev.next = next_node
+        self.nodeCount -= 1
+        return curr.data
+
+
+    def popBefore(self, next):
+        curr = next.prev
+        prev_node = curr.prev
+        prev_node.next = next
+        next.prev = prev_node
+        self.nodeCount -= 1
+        return curr.data
+
+
+    def popAt(self, pos):
+        if pos < 1 or pos > self.nodeCount:  # TODO. 왜 범위가 이와 같은지 정확한 이유 이해하기
+            raise IndexError
+
+        prev = self.getAt(pos - 1)
+        return self.popAfter(prev)
+
+    def concat(self, L):
+        link1 = self.tail.prev
+        link2 = L.head.next
+        link1.next = link2
+        link2.prev = link1
+        self.tail = L.tail
+        self.nodeCount += L.nodeCount
+        return True
 
 
 def solution(x):
