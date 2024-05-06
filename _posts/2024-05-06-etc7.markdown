@@ -1,0 +1,32 @@
+---
+layout: post
+title: 'math.prod'
+subtitle: 'etc'
+categories: etc
+# tags: asynchronous
+comments: false
+order: 4
+---
+
+math.prod()메서드는 주어진 iterable에서 요소의 곱을 반환한다   
+
+> math.prod(iterable, start)   
+
+```python
+import math
+
+array = [2, 3, 4]
+
+# array의 모든 데이터 곱한다
+product = math.prod(array)
+
+print(product)  # 24
+```
+
+```python
+import math
+
+array = [2, 3, 4]
+n = 2
+math.prod(map(lambda x: x//n, array))  # 2
+```
