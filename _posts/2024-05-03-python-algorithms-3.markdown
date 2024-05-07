@@ -117,7 +117,7 @@ order: 1
 
 <br>
 
-### 양방향 연결리스트 구현 (작성중..)
+### 양방향 연결리스트 구현
 아래 이미지처럼 더미 head, tail 데이터가 있는 구조로 구현됨    
 <img width="920" alt="스크린샷 2024-05-05 오후 7 50 50" src="https://github.com/heejung-gjt/heejung-gjt.github.io/assets/64240637/28033d15-3286-41be-af11-c8641121ebbd">    
 
