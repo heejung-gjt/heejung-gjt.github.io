@@ -1,0 +1,100 @@
+---
+layout: post
+title: 'scp 사용법'
+subtitle: 'etc'
+categories: etc
+# tags: asynchronous
+comments: false
+order: 4
+---
+
+### scp란
+ssh 원격 접속을 기반으로 한 파일 전송 프로토콜이다   
+- 원격지에 있는 파일과 디렉터리를 보내거나 가져올때 사용한다   
+- 네트워크와 연결되어 있는 환경에서 ssh와 동일하게 22번 포트와 identity file을 사용하기 때문에 보안적으로 안정된 프로토콜이다    
+
+<br>
+
+### 자주 사용하는 옵션
+- -a: 디렉터리 및 하위 모든 파일(아카이브 모드) 복사
+- -c: 압축하여 복사
+- -p: 원본 권한 속성값 복사
+- -P: 포트 번호 지정 복사
+- -r: 디렉터리 및 하위 모든 파일 복사
+- -v: 복사 과정을 출력
+- -i: pem키와 같은 인증키 필요시 사용
+
+<br>
+
+### 로컬 -> 리모트 전송
+> 모든 명령어 로컬 서버에서 입력 
+
+- 하나의 파일을 리모토로 전송   
+    - scp [옵션][파일명][리모트id]@[리모트ip]:[받는 디렉터리 위치]   
+    ```script
+$ scp test1 ubuntu@123.123.123.123:/tmp/test
+    ```
+
+- 여러 파일을 리모토로 전송   
+    - scp [옵션][파일명1][파일명2][리모트id]@[리모트ip]:[받는 디렉터리 위치]   
+    ```script
+$ scp test1 test2 ubuntu@123.123.123.123:/tmp/test
+    ```
+- 여러 파일 포함된 폴더 리모토로 전송    
+    - scp [옵션][파일명][리모트id]@[리모트ip]:[받는 디렉터리 위치]   
+    ```script
+$ scp -r test_folder ubuntu@123.123.123.123:/tmp/test
+    ```
+- ec2처럼 접속에 키 파일 인증을 요구하는 경우
+    - -i 옵션을 사용해 전송
+    - scp [옵션][pem키 디렉터리][파일명][리모트id]@[리모트ip]:[받는 디렉터리 위치]
+    ```script
+$ scp -i /home/keys/test.pem test1 ubuntu@123.123.123.123:/tmp/test
+    ```
+
+<br>
+
+### 리모트 -> 로컬 전송
+> 모든 명령어 로컬 서버에서 입력 
+
+- 하나의 파일을 로컬로 전송
+    - scp [옵션][원격지id]@[원격지ip]:[원본 파일 위치][받는 디렉터리 위치]   
+    ```script
+$ scp ubuntu@123.123.123.123:/tmp/test1 /tmp
+    ```
+- 여러 파일을 로컬로 전송
+    - scp [옵션][원격지id]@[원격지ip]:[원본 파일 위치1][원본 파일 위치2][받는 디렉터리 위치]   
+    ```script
+$ scp ubuntu@123.123.123.123:"/tmp/test1/tmp/test2" /tmp
+    ```
+- 여러 파일 포함된 폴더 로컬로 전송
+    - scp [옵션][원격지id]@[원격지ip]:[디렉터리 위치][받는 디렉터리 위치]   
+    ```script
+$ scp -r ubuntu@123.123.123.123:/tmp/test_folder /tmp
+    ```
+- ec2처럼 접속에 키 파일 인증을 요구하는 경우
+    - -i 옵션을 사용해 전송
+    - scp [옵션][pem키 디렉터리][원격지id]@[원격지ip]:[디렉터리 위치][받는 디렉터리 위치]
+    ```script
+$ scp -ri /home/keys/test.pem ubuntu@123.123.123.123:/tmp/test_folder /tmp
+    ```
+
+
+<br>
+
+### 참고 사항
+> pem키에 대한 권한 에러 발생시  
+
+<img width="530" alt="스크린샷 2024-05-10 오후 2 07 13" src="https://github.com/heejung-gjt/heejung-gjt.github.io/assets/64240637/76d677bc-7c96-47c6-a355-5b863e107f75">   
+
+- owner만 읽을 수 있게 chmod 명령어로 권한을 바꾸어준다
+    ```
+$ chmod 400 {your pem_name}.pem
+    ```
+
+- 파일 권한 해석    
+    ex) drwx/rwx/rwx    
+    - d: 디렉터리 
+    - 첫번째 rwx: owner의 권한으로 Read(4), Write(2), Execute(1) 가능
+    - 두번째 rwx: owner가 포함된 그룹의 권한으로 Read(4), Write(2), Execute(1) 가능
+    - 세번째 rwx: 그 외 권한으로 Read(4), Write(2), Execute(1) 가능
