@@ -12,9 +12,9 @@ python에는 Call By Reference 또는 Call By Value라는 개념이 존재하지
 ### mutable과 immutable
 python에서는 모든 것이 객체이며 크게 2가지의 종류가 있다   
 - mutable: 값이 변경 가능한 객체
-    - string, int, float, tuple
+    - list, dictionary, set
 - immutable: 값 변경이 불가능한 객체
-    - list, dictionary, set   
+    - string, int, float, tuple, bool
 
 <br>
 
