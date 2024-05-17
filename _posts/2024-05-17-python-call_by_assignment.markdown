@@ -3,7 +3,6 @@ layout: post
 title: 'Call By Assignment (python) '
 subtitle: 'call by reference vs call by value in python'
 categories: python
-tags: know
 ---
 
 python에는 Call By Reference 또는 Call By Value라는 개념이 존재하지 않는다. python은 함수에 인수를 전달할때 call by assignment 방식으로 전달되며, 함수의 파라미터로 전달받는 객체의 유형에 따라 참조방식이 결정된다    
